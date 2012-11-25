@@ -1,17 +1,67 @@
-# Object files
-*.o
-
-# Libraries
-*.lib
-*.a
-
-# Shared objects (inc. Windows DLLs)
-*.dll
-*.so
-*.so.*
-*.dylib
-
-# Executables
-*.exe
-*.out
-*.app
+<?php
+02
+// incluir a lib fo facebook
+03
+require 'src/facebook.php';
+04
+ 
+05
+// Cria a instancia da aplicacao, informando o appid e o secret
+06
+$facebook = new Facebook(array(
+07
+  'appId'  => 'XXXXXXXXXXXXXXX',
+08
+  'secret' => 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX',
+09
+));
+10
+ 
+11
+// obtem o id do usuario
+12
+$user = $facebook->getUser();
+13
+ 
+14
+if ($user) { // usuario logado
+15
+        try {
+16
+        // Obtem dados do usuario logado
+17
+        $user_profile = $facebook->api('/me');
+18
+ 
+19
+        // exibe foto do usuario logado
+20
+        echo "<img src=\"https://graph.facebook.com/$user/picture\">";
+21
+ 
+22
+        // printa os dados do profile do usuario logado
+23
+        print_r($user_profile);
+24
+ 
+25
+        } catch (FacebookApiException $e) {
+26
+                error_log($e);
+27
+                $user = null;
+28
+        }
+29
+} else {
+30
+        // usuario nao logado, solicitar autenticacao
+31
+        $loginUrl = $facebook->getLoginUrl();
+32
+        echo "<a href=\"$loginUrl\">Facebook Login</a><br />";
+33
+        echo "<strong><em>Voc&ecirc; n&atilde;o esta conectado..</em></strong>";
+34
+}
